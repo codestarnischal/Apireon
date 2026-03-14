@@ -34,7 +34,7 @@ export const PRICING_TIERS: PricingTier[] = [
     name: 'enterprise',
     price: 149,
     credits: 500000,
-    max_projects: -1, // unlimited
+    max_projects: -1,
     rate_limit: 1000,
     features: [
       '500,000 API requests/month',
@@ -50,7 +50,7 @@ export const PRICING_TIERS: PricingTier[] = [
 ];
 
 export const APP_CONFIG = {
-  name: 'InstantAPI',
+  name: 'Apireon',
   tagline: 'Describe it. Deploy it. Done.',
   description: 'Turn natural language into live REST APIs with documentation, a playground, and database hosting — instantly.',
 };

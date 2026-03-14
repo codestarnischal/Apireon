@@ -1,5 +1,5 @@
 // ============================================================
-// InstantAPI - Global Type Definitions
+// Apireon - Global Type Definitions
 // ============================================================
 
 export type Plan = 'free' | 'pro' | 'enterprise';

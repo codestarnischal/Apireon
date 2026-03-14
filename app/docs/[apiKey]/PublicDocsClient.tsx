@@ -20,9 +20,9 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-      className="p-1 rounded hover:bg-white/[0.08] transition-colors"
+      className="p-1 rounded hover:bg-[#FAFAF9] transition-colors"
     >
-      {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-zinc-500" />}
+      {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-[#9C9C99]" />}
     </button>
   );
 }
@@ -45,31 +45,31 @@ function EndpointBlock({
   };
 
   return (
-    <div className="border border-white/[0.06] rounded-lg overflow-hidden">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02]">
+    <div className="border border-[#E5E4E2] rounded-lg overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#FAFAF9]">
         <span className={`method-badge ${methodClasses[method]} text-[11px]`}>{method}</span>
-        <code className="text-sm font-mono text-zinc-300">/{resource}{['PUT', 'DELETE'].includes(method) ? '?id={id}' : ''}</code>
-        <ChevronDown className={`h-3.5 w-3.5 text-zinc-500 ml-auto transition-transform ${open ? 'rotate-180' : ''}`} />
+        <code className="text-sm font-mono text-[#1A1A19]">/{resource}{['PUT', 'DELETE'].includes(method) ? '?id={id}' : ''}</code>
+        <ChevronDown className={`h-3.5 w-3.5 text-[#9C9C99] ml-auto transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="border-t border-white/[0.06] p-4 space-y-4">
+        <div className="border-t border-[#E5E4E2] p-4 space-y-4">
           {['POST', 'PUT'].includes(method) && (
             <div>
-              <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-semibold text-[#6B6B69] uppercase tracking-wider mb-2">
                 Request Body
               </h4>
-              <pre className="bg-surface-1 rounded-lg p-3 text-xs font-mono text-zinc-400 overflow-x-auto">
+              <pre className="bg-surface-1 rounded-lg p-3 text-xs font-mono text-[#6B6B69] overflow-x-auto">
                 {JSON.stringify(example, null, 2)}
               </pre>
             </div>
           )}
           <div>
-            <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Schema</h4>
+            <h4 className="text-xs font-semibold text-[#6B6B69] uppercase tracking-wider mb-2">Schema</h4>
             <div className="space-y-1">
               {Object.entries(schema).map(([field, type]) => (
-                <div key={field} className="flex items-center gap-3 text-sm py-1 px-3 bg-white/[0.02] rounded">
+                <div key={field} className="flex items-center gap-3 text-sm py-1 px-3 bg-[#FAFAF9] rounded">
                   <code className="font-mono text-zinc-200 w-28">{field}</code>
-                  <span className="font-mono text-xs text-brand-400">{type}</span>
+                  <span className="font-mono text-xs text-[#1A1A19]">{type}</span>
                 </div>
               ))}
             </div>
@@ -86,40 +86,40 @@ export default function PublicDocsClient({ project }: { project: PublicProject }
     : `/api/v1/${project.api_key}`;
 
   return (
-    <div className="min-h-screen bg-surface-0 text-zinc-100">
+    <div className="min-h-screen bg-[#FAFAF9] text-[#1A1A19]">
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="h-10 w-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center">
-              <BookOpen className="h-5 w-5 text-brand-400" />
+            <div className="h-10 w-10 rounded-xl bg-[#F0F0EE] border border-brand-500/30 flex items-center justify-center">
+              <BookOpen className="h-5 w-5 text-[#1A1A19]" />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">{project.name}</h1>
-              {project.description && <p className="text-sm text-zinc-400">{project.description}</p>}
+              {project.description && <p className="text-sm text-[#6B6B69]">{project.description}</p>}
             </div>
           </div>
-          <div className="flex items-center gap-2 mt-4 bg-white/[0.03] rounded-lg px-4 py-2.5 border border-white/[0.06]">
-            <Globe className="h-4 w-4 text-zinc-500" />
-            <code className="text-sm font-mono text-brand-300 flex-1">{baseUrl}</code>
+          <div className="flex items-center gap-2 mt-4 bg-[#FAFAF9] rounded-lg px-4 py-2.5 border border-[#E5E4E2]">
+            <Globe className="h-4 w-4 text-[#9C9C99]" />
+            <code className="text-sm font-mono text-[#1A1A19] flex-1">{baseUrl}</code>
             <CopyBtn text={baseUrl} />
           </div>
         </div>
 
         {/* Info cards */}
         <div className="grid md:grid-cols-2 gap-4 mb-10">
-          <div className="glass-panel p-4 flex items-start gap-3">
+          <div className="card p-4 flex items-start gap-3">
             <Lock className="h-5 w-5 text-emerald-400 mt-0.5" />
             <div>
               <h3 className="text-sm font-semibold text-white">Authentication</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">API key is embedded in the URL. No auth headers needed.</p>
+              <p className="text-xs text-[#6B6B69] mt-0.5">API key is embedded in the URL. No auth headers needed.</p>
             </div>
           </div>
-          <div className="glass-panel p-4 flex items-start gap-3">
+          <div className="card p-4 flex items-start gap-3">
             <Zap className="h-5 w-5 text-amber-400 mt-0.5" />
             <div>
               <h3 className="text-sm font-semibold text-white">Rate Limit</h3>
-              <p className="text-xs text-zinc-400 mt-0.5">{project.rate_limit_per_minute} requests per minute</p>
+              <p className="text-xs text-[#6B6B69] mt-0.5">{project.rate_limit_per_minute} requests per minute</p>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function PublicDocsClient({ project }: { project: PublicProject }
         {Object.entries(project.schema_definition).map(([resource, schema]) => (
           <div key={resource} className="mb-8">
             <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2 capitalize">
-              <ChevronRight className="h-4 w-4 text-brand-400" />
+              <ChevronRight className="h-4 w-4 text-[#1A1A19]" />
               {resource}
             </h2>
             <div className="space-y-2">
@@ -140,9 +140,9 @@ export default function PublicDocsClient({ project }: { project: PublicProject }
         ))}
 
         {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/[0.06] text-center">
-          <p className="text-xs text-zinc-500">
-            Powered by <a href="/" className="text-brand-400 hover:text-brand-300">InstantAPI</a>
+        <div className="mt-16 pt-8 border-t border-[#E5E4E2] text-center">
+          <p className="text-xs text-[#9C9C99]">
+            Powered by <a href="/" className="text-[#1A1A19] hover:text-[#1A1A19]">Apireon</a>
           </p>
         </div>
       </div>

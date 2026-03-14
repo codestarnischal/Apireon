@@ -1,6 +1,6 @@
 import { SchemaDefinition } from '@/types';
 
-const SYSTEM_PROMPT = `You are the InstantAPI Architect Engine. Your job is to convert a natural language API description into a structured JSON schema definition.
+const SYSTEM_PROMPT = `You are the Apireon Architect Engine. Your job is to convert a natural language API description into a structured JSON schema definition.
 
 RULES:
 1. Extract resource names (nouns, pluralized lowercase). E.g. "books", "authors", "orders".

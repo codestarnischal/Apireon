@@ -1,4 +1,4 @@
-# ⚡ InstantAPI
+# ⚡ Apireon
 
 **Describe it. Deploy it. Done.**
 
@@ -34,7 +34,7 @@ User Prompt → Architect Engine (Claude AI) → Schema (JSONB)
 
 ```bash
 git clone <your-repo>
-cd instantapi
+cd apireon
 npm install
 ```
 
@@ -73,7 +73,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ## File Tree
 
 ```
-instantapi/
+apireon/
 ├── app/
 │   ├── api/
 │   │   ├── v1/[apiKey]/[resource]/

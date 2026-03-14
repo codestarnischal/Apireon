@@ -30,7 +30,7 @@ export default async function PublicDocsPage({ params }: PageProps) {
 export async function generateMetadata({ params }: PageProps) {
   const { apiKey } = await params;
   return {
-    title: `API Documentation — InstantAPI`,
+    title: `API Documentation — Apireon`,
     description: `Auto-generated REST API documentation`,
   };
 }
