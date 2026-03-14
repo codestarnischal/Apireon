@@ -4,93 +4,83 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { PRICING_TIERS } from '@/lib/utils/constants';
+import Link from 'next/link';
 import type { Profile } from '@/types';
-
-const CheckIcon = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>;
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadProfile();
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+      if (data) setProfile(data);
+      setLoading(false);
+    })();
   }, []);
 
-  const loadProfile = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-    if (data) setProfile(data);
-    setLoading(false);
-  };
+  if (loading) return <div className="flex justify-center py-32"><div className="h-6 w-6 border-2 border-[#d2d2d7] border-t-[#0071e3] rounded-full animate-spin" /></div>;
 
-  if (loading) return <div className="flex items-center justify-center h-64"><div className="h-6 w-6 border-2 border-[#E5E4E2] border-t-[#1A1A19] rounded-full animate-spin" /></div>;
-
-  const usedCredits = profile?.requests_used ?? 0;
-  const totalCredits = profile?.request_credits ?? 1000;
-  const pct = Math.min(100, (usedCredits / totalCredits) * 100);
+  const used = profile?.requests_used ?? 0;
+  const total = profile?.request_credits ?? 1000;
+  const pct = Math.min(100, (used / total) * 100);
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      <div>
-        <h1 className="text-2xl font-bold text-[#1A1A19]">Settings</h1>
-        <p className="text-[#6B6B69] mt-1">Account, usage, and billing</p>
-      </div>
+    <div className="space-y-8 max-w-2xl">
+      <h1 className="text-[22px] font-bold text-[#1d1d1f]">Settings</h1>
 
       {/* Profile */}
       <div className="card p-6">
-        <h2 className="text-sm font-semibold text-[#1A1A19] mb-4">Profile</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+        <h2 className="section-label mb-4">Profile</h2>
+        <div className="grid gap-4">
           <div>
-            <label className="text-xs text-[#9C9C99] mb-1.5 block">Name</label>
-            <input type="text" defaultValue={profile?.full_name ?? ''} className="input-field" />
+            <label className="text-[13px] font-semibold text-[#1d1d1f] mb-1.5 block">Name</label>
+            <input defaultValue={profile?.full_name ?? ''} className="input-field" />
           </div>
           <div>
-            <label className="text-xs text-[#9C9C99] mb-1.5 block">Email</label>
-            <input type="email" defaultValue={profile?.email ?? ''} className="input-field opacity-60" disabled />
+            <label className="text-[13px] font-semibold text-[#1d1d1f] mb-1.5 block">Email</label>
+            <input defaultValue={profile?.email ?? ''} className="input-field opacity-50" disabled />
           </div>
         </div>
-        <button className="btn-primary !py-2 !px-4 text-sm mt-4">Save Changes</button>
+        <button className="btn-primary !py-2.5 mt-4">Save changes</button>
       </div>
 
       {/* Usage */}
       <div className="card p-6">
-        <h2 className="text-sm font-semibold text-[#1A1A19] mb-4">Usage</h2>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-[#6B6B69]">API Requests</span>
-          <span className="text-sm font-mono text-[#1A1A19]">{usedCredits.toLocaleString()} / {totalCredits.toLocaleString()}</span>
+        <h2 className="section-label mb-4">Usage this month</h2>
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-[14px] text-[#424245]">API requests</span>
+          <span className="text-[14px] font-mono font-bold text-[#1d1d1f]">{used.toLocaleString()} / {total.toLocaleString()}</span>
         </div>
-        <div className="h-2.5 bg-[#F0F0EE] rounded-full overflow-hidden">
+        <div className="h-2 bg-[#f5f5f7] rounded-full overflow-hidden">
           <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, ease: 'easeOut' }}
-            className={`h-full rounded-full ${pct > 80 ? 'bg-red-500' : pct > 50 ? 'bg-amber-500' : 'bg-[#1A1A19]'}`} />
+            className={`h-full rounded-full ${pct > 80 ? 'bg-[#ff3b30]' : pct > 50 ? 'bg-[#ff9500]' : 'bg-[#0071e3]'}`} />
         </div>
-        <p className="text-xs text-[#9C9C99] mt-2">{(totalCredits - usedCredits).toLocaleString()} credits remaining</p>
+        <p className="text-[12px] text-[#86868b] mt-2">{(total - used).toLocaleString()} remaining</p>
       </div>
 
       {/* Plan */}
       <div className="card p-6">
-        <h2 className="text-sm font-semibold text-[#1A1A19] mb-4">Plan</h2>
-        <div className="grid md:grid-cols-3 gap-4">
+        <h2 className="section-label mb-4">Plan</h2>
+        <div className="grid gap-3">
           {PRICING_TIERS.map(tier => {
             const current = tier.name === (profile?.plan ?? 'free');
             return (
-              <div key={tier.name} className={`p-4 rounded-xl border transition-all ${current ? 'border-[#1A1A19] bg-[#FAFAF9]' : 'border-[#E5E4E2] hover:border-[#D4D3D0]'}`}>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold capitalize">{tier.name}</h3>
-                  {current && <span className="badge text-[10px]">Current</span>}
+              <div key={tier.name} className={`flex items-center justify-between p-4 rounded-xl border transition-all
+                ${current ? 'border-[#0071e3] bg-[#f0f7ff]' : 'border-black/[0.06] hover:border-[#d2d2d7]'}`}>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-[#1d1d1f] capitalize">{tier.name}</span>
+                    {current && <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#0071e3] text-white">CURRENT</span>}
+                  </div>
+                  <p className="text-[13px] text-[#86868b] mt-0.5">{tier.credits.toLocaleString()} requests/mo · {tier.max_projects === -1 ? 'Unlimited' : tier.max_projects} projects</p>
                 </div>
-                <div className="flex items-baseline gap-0.5 mb-3">
-                  <span className="text-2xl font-bold">${tier.price}</span>
-                  <span className="text-xs text-[#9C9C99]">/mo</span>
+                <div className="text-right">
+                  <span className="text-[20px] font-bold text-[#1d1d1f]">${tier.price}</span>
+                  <span className="text-[12px] text-[#86868b]">/mo</span>
                 </div>
-                <ul className="space-y-1.5 mb-4">
-                  {tier.features.slice(0, 4).map(f => (
-                    <li key={f} className="flex items-center gap-2 text-xs text-[#6B6B69]">
-                      <span className="text-emerald-600"><CheckIcon /></span> {f}
-                    </li>
-                  ))}
-                </ul>
-                {!current && <button className="w-full btn-secondary !py-2 text-xs">Upgrade</button>}
               </div>
             );
           })}
@@ -98,11 +88,11 @@ export default function SettingsPage() {
       </div>
 
       {/* Danger */}
-      <div className="card p-6 border-red-200">
-        <h2 className="text-sm font-semibold text-red-600 mb-3">Danger Zone</h2>
-        <p className="text-sm text-[#6B6B69] mb-3">Permanently delete your account and all data.</p>
-        <button className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition-colors">
-          Delete Account
+      <div className="card p-6 border-[#fce4ec]">
+        <h2 className="text-[12px] font-bold uppercase tracking-widest text-[#ff3b30] mb-3">Danger zone</h2>
+        <p className="text-[14px] text-[#424245] mb-4">Permanently delete your account and all data. This cannot be undone.</p>
+        <button className="px-4 py-2.5 rounded-full text-[13px] font-semibold text-[#ff3b30] bg-[#fff5f5] border border-[#fce4ec] hover:bg-[#fce4ec] transition-colors">
+          Delete account
         </button>
       </div>
     </div>
