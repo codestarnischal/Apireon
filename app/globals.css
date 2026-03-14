@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 3px;
+  }
+
+  body {
+    @apply bg-surface-0 text-zinc-100 antialiased;
+  }
+
+  ::selection {
+    background-color: rgba(99, 102, 241, 0.4);
+    color: white;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-xl;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-panel-strong {
+    @apply bg-white/[0.07] backdrop-blur-2xl border border-white/[0.12] rounded-xl;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .glow-border {
+    position: relative;
+  }
+
+  .glow-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #818cf8, #6366f1, #3b82f6, #06b6d4);
+    background-size: 200% auto;
+  }
+
+  .text-gradient-warm {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #f472b6, #8b5cf6, #6366f1);
+  }
+
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-medium text-white 
+           bg-gradient-to-r from-brand-600 to-brand-500 rounded-lg
+           hover:from-brand-500 hover:to-brand-400
+           transition-all duration-200 ease-out
+           shadow-glow-sm hover:shadow-glow-md
+           active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-medium
+           text-zinc-300 hover:text-white
+           bg-white/[0.04] hover:bg-white/[0.08] rounded-lg
+           border border-white/[0.08] hover:border-white/[0.15]
+           transition-all duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-white/[0.04] border border-white/[0.08] rounded-lg
+           text-zinc-100 placeholder:text-zinc-500
+           focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/40
+           transition-all duration-200;
+  }
+
+  .code-block {
+    @apply font-mono text-sm bg-surface-1 border border-white/[0.06] rounded-lg p-4 overflow-x-auto;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-brand-500/20 text-brand-300 border border-brand-500/30;
+  }
+
+  .method-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded font-mono text-xs font-bold uppercase;
+  }
+
+  .method-get { @apply bg-emerald-500/20 text-emerald-400 border border-emerald-500/30; }
+  .method-post { @apply bg-blue-500/20 text-blue-400 border border-blue-500/30; }
+  .method-put { @apply bg-amber-500/20 text-amber-400 border border-amber-500/30; }
+  .method-delete { @apply bg-red-500/20 text-red-400 border border-red-500/30; }
+
+  .noise-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+}
