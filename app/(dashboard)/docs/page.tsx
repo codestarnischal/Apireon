@@ -32,9 +32,9 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-      className="p-1 rounded hover:bg-[var(--bg-2)] transition-colors"
+      className="p-1 rounded hover:bg-[var(--cream)] transition-colors"
     >
-      {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-[var(--text-2)]" />}
+      {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-[var(--ink-2)]" />}
     </button>
   );
 }
@@ -83,29 +83,29 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
         : JSON.stringify({ success: true, data: { id: '550e8400-...', ...example } }, null, 2);
 
   return (
-    <div className="border border-white/[0.06] rounded-lg overflow-hidden">
+    <div className="border border-black/[0.06] rounded-lg overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--bg-2)] transition-colors"
+        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--cream)] transition-colors"
       >
         <span className={`method-badge ${config.color} text-[11px]`}>{method}</span>
-        <code className="text-sm font-mono text-[var(--text-2)]">/{resource}{method === 'PUT' || method === 'DELETE' ? '?id={id}' : ''}</code>
-        <span className="text-xs text-[var(--text-2)] ml-auto mr-2">{config.desc}</span>
-        <ChevronDown className={`h-3.5 w-3.5 text-[var(--text-2)] transition-transform ${expanded ? 'rotate-180' : ''}`} />
+        <code className="text-sm font-mono text-[var(--ink-2)]">/{resource}{method === 'PUT' || method === 'DELETE' ? '?id={id}' : ''}</code>
+        <span className="text-xs text-[var(--ink-2)] ml-auto mr-2">{config.desc}</span>
+        <ChevronDown className={`h-3.5 w-3.5 text-[var(--ink-2)] transition-transform ${expanded ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence>
         {expanded && (
           <motion.div
             initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}
-            className="border-t border-white/[0.06] overflow-hidden"
+            className="border-t border-black/[0.06] overflow-hidden"
           >
             <div className="p-5 space-y-5">
               {/* URL */}
               <div>
-                <h4 className="text-xs font-semibold text-[var(--text-2)] uppercase tracking-wider mb-2">Endpoint</h4>
-                <div className="flex items-center gap-2 bg-[var(--bg-1)] rounded px-3 py-2">
-                  <code className="text-sm font-mono text-white flex-1">{url}{method !== 'POST' && method !== 'GET' ? '?id={id}' : ''}</code>
+                <h4 className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">Endpoint</h4>
+                <div className="flex items-center gap-2 bg-white rounded px-3 py-2">
+                  <code className="text-sm font-mono text-[var(--ink)] flex-1">{url}{method !== 'POST' && method !== 'GET' ? '?id={id}' : ''}</code>
                   <CopyBtn text={url} />
                 </div>
               </div>
@@ -113,13 +113,13 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
               {/* Query Params */}
               {config.queryParams && (
                 <div>
-                  <h4 className="text-xs font-semibold text-[var(--text-2)] uppercase tracking-wider mb-2">Query Parameters</h4>
+                  <h4 className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">Query Parameters</h4>
                   <div className="space-y-1.5">
                     {config.queryParams.map((p) => (
                       <div key={p} className="flex items-center gap-3 text-sm py-1">
-                        <code className="font-mono text-white">{p}</code>
-                        <span className="text-[var(--text-2)]">—</span>
-                        <span className="text-[var(--text-2)] text-xs">
+                        <code className="font-mono text-[var(--ink)]">{p}</code>
+                        <span className="text-[var(--ink-2)]">—</span>
+                        <span className="text-[var(--ink-2)] text-xs">
                           {p === 'page' ? 'Page number (default: 1)' :
                             p === 'per_page' ? 'Results per page (default: 25, max: 100)' :
                               p === 'sort' ? 'Sort field (default: created_at)' :
@@ -135,25 +135,25 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
               {/* Request Body (POST/PUT) */}
               {(method === 'POST' || method === 'PUT') && (
                 <div>
-                  <h4 className="text-xs font-semibold text-[var(--text-2)] uppercase tracking-wider mb-2">
-                    Request Body {method === 'PUT' && <span className="text-[var(--text-2)] normal-case">(partial updates allowed)</span>}
+                  <h4 className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">
+                    Request Body {method === 'PUT' && <span className="text-[var(--ink-2)] normal-case">(partial updates allowed)</span>}
                   </h4>
                   <div className="space-y-1.5 mb-4">
                     {Object.entries(schema).map(([field, type]) => (
-                      <div key={field} className="flex items-center gap-3 text-sm py-1.5 px-3 bg-[var(--bg-2)] rounded">
-                        <code className="font-mono text-[var(--text-2)] w-32">{field}</code>
-                        <span className="font-mono text-xs text-white">{type}</span>
-                        <span className="text-[var(--text-2)] text-xs flex-1">{TYPE_DESCRIPTIONS[type] || ''}</span>
+                      <div key={field} className="flex items-center gap-3 text-sm py-1.5 px-3 bg-[var(--cream)] rounded">
+                        <code className="font-mono text-[var(--ink-2)] w-32">{field}</code>
+                        <span className="font-mono text-xs text-[var(--ink)]">{type}</span>
+                        <span className="text-[var(--ink-2)] text-xs flex-1">{TYPE_DESCRIPTIONS[type] || ''}</span>
                         {method === 'POST' && <span className="text-[10px] text-amber-400/60 uppercase">required</span>}
                       </div>
                     ))}
                   </div>
-                  <div className="bg-[var(--bg-1)] rounded-lg overflow-hidden">
-                    <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.06]">
-                      <span className="text-[10px] text-[var(--text-2)] uppercase">Example Body</span>
+                  <div className="bg-white rounded-lg overflow-hidden">
+                    <div className="flex items-center justify-between px-3 py-1.5 border-b border-black/[0.06]">
+                      <span className="text-[10px] text-[var(--ink-2)] uppercase">Example Body</span>
                       <CopyBtn text={JSON.stringify(example, null, 2)} />
                     </div>
-                    <pre className="p-3 text-xs font-mono text-[var(--text-2)] overflow-x-auto">
+                    <pre className="p-3 text-xs font-mono text-[var(--ink-2)] overflow-x-auto">
                       {JSON.stringify(example, null, 2)}
                     </pre>
                   </div>
@@ -162,13 +162,13 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
 
               {/* Response */}
               <div>
-                <h4 className="text-xs font-semibold text-[var(--text-2)] uppercase tracking-wider mb-2">Example Response</h4>
-                <div className="bg-[var(--bg-1)] rounded-lg overflow-hidden">
-                  <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.06]">
+                <h4 className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">Example Response</h4>
+                <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="flex items-center justify-between px-3 py-1.5 border-b border-black/[0.06]">
                     <span className="text-[10px] text-emerald-400/80 font-mono">200 OK</span>
                     <CopyBtn text={exampleResponse} />
                   </div>
-                  <pre className="p-3 text-xs font-mono text-[var(--text-2)] overflow-x-auto max-h-64">
+                  <pre className="p-3 text-xs font-mono text-[var(--ink-2)] overflow-x-auto max-h-64">
                     {exampleResponse}
                   </pre>
                 </div>
@@ -191,53 +191,53 @@ export default function DocsPage() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <BookOpen className="h-6 w-6 text-white" />
-          <h1 className="text-2xl font-bold text-white">API Documentation</h1>
+          <BookOpen className="h-6 w-6 text-[var(--ink)]" />
+          <h1 className="text-2xl font-bold text-[var(--ink)]">API Documentation</h1>
         </div>
-        <p className="text-[var(--text-2)]">Auto-generated documentation for your Bookstore API</p>
+        <p className="text-[var(--ink-2)]">Auto-generated documentation for your Bookstore API</p>
       </div>
 
-      {/* Overview sf */}
-      <div className="sf-elevated p-6">
+      {/* Overview card */}
+      <div className="card p-6">
         <div className="grid md:grid-cols-3 gap-6">
           <div className="flex items-start gap-3">
-            <Globe className="h-5 w-5 text-white mt-0.5" />
+            <Globe className="h-5 w-5 text-[var(--ink)] mt-0.5" />
             <div>
-              <h3 className="text-sm font-semibold text-white mb-1">Base URL</h3>
-              <code className="text-xs font-mono text-white break-all">{baseUrl}</code>
+              <h3 className="text-sm font-semibold text-[var(--ink)] mb-1">Base URL</h3>
+              <code className="text-xs font-mono text-[var(--ink)] break-all">{baseUrl}</code>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Lock className="h-5 w-5 text-emerald-400 mt-0.5" />
             <div>
-              <h3 className="text-sm font-semibold text-white mb-1">Authentication</h3>
-              <p className="text-xs text-[var(--text-2)]">API key embedded in URL path. No headers required.</p>
+              <h3 className="text-sm font-semibold text-[var(--ink)] mb-1">Authentication</h3>
+              <p className="text-xs text-[var(--ink-2)]">API key embedded in URL path. No headers required.</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Zap className="h-5 w-5 text-amber-400 mt-0.5" />
             <div>
-              <h3 className="text-sm font-semibold text-white mb-1">Rate Limit</h3>
-              <p className="text-xs text-[var(--text-2)]">60 requests/min (Free), 300/min (Pro)</p>
+              <h3 className="text-sm font-semibold text-[var(--ink)] mb-1">Rate Limit</h3>
+              <p className="text-xs text-[var(--ink-2)]">60 requests/min (Free), 300/min (Pro)</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Error codes reference */}
-      <div className="sf p-5">
-        <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-          <Info className="h-4 w-4 text-[var(--text-2)]" /> Response Format
+      <div className="card p-5">
+        <h2 className="text-sm font-semibold text-[var(--ink)] mb-3 flex items-center gap-2">
+          <Info className="h-4 w-4 text-[var(--ink-2)]" /> Response Format
         </h2>
-        <p className="text-sm text-[var(--text-2)] mb-3">All responses follow a consistent JSON envelope:</p>
+        <p className="text-sm text-[var(--ink-2)] mb-3">All responses follow a consistent JSON envelope:</p>
         <div className="grid md:grid-cols-2 gap-4 text-xs">
-          <div className="bg-[var(--bg-1)] rounded-lg p-3">
+          <div className="bg-white rounded-lg p-3">
             <div className="text-emerald-400 font-mono mb-1">Success</div>
-            <pre className="text-[var(--text-2)] font-mono">{`{ "success": true, "data": {...}, "meta": {...} }`}</pre>
+            <pre className="text-[var(--ink-2)] font-mono">{`{ "success": true, "data": {...}, "meta": {...} }`}</pre>
           </div>
-          <div className="bg-[var(--bg-1)] rounded-lg p-3">
+          <div className="bg-white rounded-lg p-3">
             <div className="text-red-400 font-mono mb-1">Error</div>
-            <pre className="text-[var(--text-2)] font-mono">{`{ "success": false, "error": { "code": "...", "message": "..." } }`}</pre>
+            <pre className="text-[var(--ink-2)] font-mono">{`{ "success": false, "error": { "code": "...", "message": "..." } }`}</pre>
           </div>
         </div>
       </div>
@@ -245,10 +245,10 @@ export default function DocsPage() {
       {/* Endpoints by resource */}
       {Object.entries(DEMO_SCHEMA).map(([resource, schema]) => (
         <div key={resource}>
-          <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2 capitalize">
-            <ChevronRight className="h-4 w-4 text-white" />
+          <h2 className="text-lg font-semibold text-[var(--ink)] mb-3 flex items-center gap-2 capitalize">
+            <ChevronRight className="h-4 w-4 text-[var(--ink)]" />
             {resource}
-            <span className="text-xs font-normal text-[var(--text-2)] ml-1">
+            <span className="text-xs font-normal text-[var(--ink-2)] ml-1">
               ({Object.keys(schema).length} fields)
             </span>
           </h2>
@@ -267,16 +267,16 @@ export default function DocsPage() {
       ))}
 
       {/* Status codes */}
-      <div className="sf p-5">
-        <h2 className="text-sm font-semibold text-white mb-3">HTTP Status Codes</h2>
+      <div className="card p-5">
+        <h2 className="text-sm font-semibold text-[var(--ink)] mb-3">HTTP Status Codes</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
           {[
             ['200', 'OK', 'emerald'], ['201', 'Created', 'emerald'], ['400', 'Bad Request', 'amber'],
             ['402', 'Credits Exhausted', 'amber'], ['404', 'Not Found', 'red'], ['429', 'Rate Limited', 'red'],
           ].map(([code, text, color]) => (
-            <div key={code} className="flex items-center gap-2 py-1.5 px-3 rounded bg-[var(--bg-2)]">
+            <div key={code} className="flex items-center gap-2 py-1.5 px-3 rounded bg-[var(--cream)]">
               <span className={`font-mono font-bold text-${color}-400`}>{code}</span>
-              <span className="text-[var(--text-2)]">{text}</span>
+              <span className="text-[var(--ink-2)]">{text}</span>
             </div>
           ))}
         </div>
