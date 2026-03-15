@@ -20,20 +20,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
-      <header className="sticky top-0 z-40 bg-[var(--bg)]/70 backdrop-blur-2xl border-b border-white/[0.03]">
-        <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-[var(--warm)]">
+      <header className="sticky top-0 z-40 bg-[var(--warm)]/80 backdrop-blur-2xl border-b border-black/[0.04]">
+        <div className="max-w-[1200px] mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-[15px] font-[900] text-white font-[var(--font-display)] tracking-[-0.03em] uppercase">Procyon Labs</Link>
-            <div className="h-4 w-px bg-white/[0.06]" />
-            <nav className="flex items-center gap-0.5">
+            <Link href="/" className="text-[17px] font-bold text-[var(--ink)] tracking-[-0.03em]">Procyon Labs</Link>
+            <div className="h-4 w-px bg-black/[0.06]" />
+            <nav className="flex items-center gap-0.5 bg-white rounded-full p-1 border border-black/[0.05]">
               {NAV.map(({ href, l }) => {
                 const active = pathname === href;
                 return (
-                  <Link key={href} href={href} className={`relative px-4 py-2 text-[12px] font-semibold font-[var(--font-display)] tracking-wide uppercase rounded-full transition-all
-                    ${active ? 'text-white' : 'text-[var(--text-3)] hover:text-[var(--text-2)] hover:bg-white/[0.03]'}`}>
+                  <Link key={href} href={href} className={`relative px-4 py-1.5 text-[13px] font-medium rounded-full transition-all
+                    ${active ? 'text-[var(--ink)]' : 'text-[var(--ink-3)] hover:text-[var(--ink)]'}`}>
                     {l}
-                    {active && <motion.div layoutId="dnav" className="absolute inset-0 bg-white/[0.05] rounded-full border border-white/[0.04] -z-10"
+                    {active && <motion.div layoutId="dnav" className="absolute inset-0 bg-[var(--warm)] rounded-full border border-black/[0.04] -z-10"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }} />}
                   </Link>
                 );
@@ -41,9 +41,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            {user && <span className="text-[10px] text-[var(--text-3)] t-mono">{user.email}</span>}
+            {user && <span className="text-[11px] text-[var(--ink-3)]">{user.email}</span>}
             <motion.button onClick={() => { supabase.auth.signOut(); router.push('/'); }}
-              className="text-[12px] text-[var(--text-3)] hover:text-[var(--gold)] font-semibold font-[var(--font-display)] tracking-wide uppercase transition-colors cursor-pointer bg-transparent border-none"
+              className="text-[13px] text-[var(--ink-3)] hover:text-[var(--ink)] font-medium transition-colors cursor-pointer bg-transparent border-none"
               whileHover={{ scale: 1.02 }}>Sign out</motion.button>
           </div>
         </div>

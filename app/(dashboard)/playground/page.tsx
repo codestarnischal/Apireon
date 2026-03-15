@@ -58,9 +58,9 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-      className="p-1.5 rounded hover:bg-[var(--bg-1)]/[0.02] transition-colors"
+      className="p-1.5 rounded hover:bg-[var(--warm)] transition-colors"
     >
-      {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 text-[var(--text-2)]" />}
+      {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 text-[var(--ink-2)]" />}
     </button>
   );
 }
@@ -149,14 +149,14 @@ export default function PlaygroundPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">API Playground</h1>
-        <p className="text-[var(--text-2)] mt-1">Test your API endpoints directly in the browser</p>
+        <h1 className="text-2xl font-bold text-[var(--ink)]">API Playground</h1>
+        <p className="text-[var(--ink-2)] mt-1">Test your API endpoints directly in the browser</p>
       </div>
 
       {/* Request Builder */}
-      <div className="glass overflow-hidden">
+      <div className="card overflow-hidden">
         {/* Method + URL bar */}
-        <div className="flex items-center gap-3 p-4 border-b border-white/[0.04]">
+        <div className="flex items-center gap-3 p-4 border-b border-black/[0.04]">
           {/* Method selector */}
           <div className="relative">
             <select
@@ -177,7 +177,7 @@ export default function PlaygroundPage() {
             <select
               value={resource}
               onChange={(e) => handleResourceChange(e.target.value)}
-              className="appearance-none bg-[var(--bg-1)]/[0.02] border border-white/[0.04] text-[var(--text-2)]
+              className="appearance-none bg-white/[0.02] border border-black/[0.04] text-[var(--ink-2)]
                         font-mono text-sm pl-3 pr-8 py-2.5 rounded-lg cursor-pointer focus:outline-none
                         focus:ring-2 focus:ring-brand-500/40"
             >
@@ -185,12 +185,12 @@ export default function PlaygroundPage() {
                 <option key={r} value={r}>/{r}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 pointer-events-none text-[var(--text-2)]" />
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 pointer-events-none text-[var(--ink-2)]" />
           </div>
 
           {/* Full URL display */}
-          <div className="flex-1 flex items-center gap-2 bg-[var(--bg-1)]/[0.02] rounded-lg px-3 py-2.5 border border-white/[0.04]">
-            <code className="text-sm font-mono text-[var(--text-2)] truncate">{fullUrl}</code>
+          <div className="flex-1 flex items-center gap-2 bg-white/[0.02] rounded-lg px-3 py-2.5 border border-black/[0.04]">
+            <code className="text-sm font-mono text-[var(--ink-2)] truncate">{fullUrl}</code>
             <CopyBtn text={fullUrl} />
           </div>
 
@@ -216,16 +216,16 @@ export default function PlaygroundPage() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="border-b border-white/[0.04]"
+              className="border-b border-black/[0.04]"
             >
-              <div className="flex items-center justify-between px-4 py-2 bg-[var(--bg-1)]/[0.02]">
-                <span className="text-xs font-semibold text-[var(--text-2)] uppercase tracking-wider">Request Body</span>
+              <div className="flex items-center justify-between px-4 py-2 bg-white/[0.02]">
+                <span className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider">Request Body</span>
                 <button
                   onClick={() => {
                     const schema = DEMO_SCHEMA[resource];
                     if (schema) setBody(JSON.stringify(generateExamplePayload(schema), null, 2));
                   }}
-                  className="text-xs text-white hover:text-white transition-colors"
+                  className="text-xs text-[var(--ink)] hover:text-[var(--ink)] transition-colors"
                 >
                   Fill example
                 </button>
@@ -235,7 +235,7 @@ export default function PlaygroundPage() {
                 onChange={(e) => setBody(e.target.value)}
                 rows={10}
                 spellCheck={false}
-                className="w-full bg-transparent px-4 py-3 font-mono text-sm text-[var(--text-2)] 
+                className="w-full bg-transparent px-4 py-3 font-mono text-sm text-[var(--ink-2)] 
                           focus:outline-none resize-none leading-relaxed"
                 placeholder='{ "key": "value" }'
               />
@@ -250,10 +250,10 @@ export default function PlaygroundPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass overflow-hidden"
+            className="card overflow-hidden"
           >
             {/* Response header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.04] bg-[var(--bg-1)]/[0.02]">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-black/[0.04] bg-white/[0.02]">
               <div className="flex items-center gap-3">
                 {response.status >= 200 && response.status < 300 ? (
                   <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -265,7 +265,7 @@ export default function PlaygroundPage() {
                 </span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5 text-xs text-[var(--text-2)]">
+                <span className="flex items-center gap-1.5 text-xs text-[var(--ink-2)]">
                   <Clock className="h-3 w-3" /> {response.time}ms
                 </span>
                 <CopyBtn text={JSON.stringify(response.data, null, 2)} />
@@ -273,7 +273,7 @@ export default function PlaygroundPage() {
             </div>
 
             {/* Response body */}
-            <pre className="p-5 text-sm font-mono text-[var(--text-2)] overflow-x-auto max-h-[500px] overflow-y-auto leading-relaxed">
+            <pre className="p-5 text-sm font-mono text-[var(--ink-2)] overflow-x-auto max-h-[500px] overflow-y-auto leading-relaxed">
               {JSON.stringify(response.data, null, 2)}
             </pre>
           </motion.div>
@@ -281,16 +281,16 @@ export default function PlaygroundPage() {
       </AnimatePresence>
 
       {/* Code Snippets */}
-      <div className="glass overflow-hidden">
+      <div className="card overflow-hidden">
         <button
           onClick={() => setShowSnippets(!showSnippets)}
-          className="w-full flex items-center justify-between px-5 py-4 hover:bg-[var(--bg-1)]/[0.02] transition-colors"
+          className="w-full flex items-center justify-between px-5 py-4 hover:bg-[var(--warm)] transition-colors"
         >
           <div className="flex items-center gap-3">
-            <Code2 className="h-4 w-4 text-white" />
-            <span className="font-semibold text-white text-sm">Code Snippets</span>
+            <Code2 className="h-4 w-4 text-[var(--ink)]" />
+            <span className="font-semibold text-[var(--ink)] text-sm">Code Snippets</span>
           </div>
-          <ChevronDown className={`h-4 w-4 text-[var(--text-2)] transition-transform ${showSnippets ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`h-4 w-4 text-[var(--ink-2)] transition-transform ${showSnippets ? 'rotate-180' : ''}`} />
         </button>
 
         <AnimatePresence>
@@ -299,18 +299,18 @@ export default function PlaygroundPage() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="border-t border-white/[0.04]"
+              className="border-t border-black/[0.04]"
             >
               {/* Language tabs */}
-              <div className="flex items-center gap-1 px-4 py-2 bg-[var(--bg-1)]/[0.02] border-b border-white/[0.04]">
+              <div className="flex items-center gap-1 px-4 py-2 bg-white/[0.02] border-b border-black/[0.04]">
                 {(['curl', 'javascript', 'python'] as SnippetLanguage[]).map((lang) => (
                   <button
                     key={lang}
                     onClick={() => setSnippetLang(lang)}
                     className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-colors
                                ${snippetLang === lang
-                        ? 'bg-[var(--bg-1)]/[0.02] text-white'
-                        : 'text-[var(--text-2)] hover:text-[var(--text-2)]'}`}
+                        ? 'bg-white/[0.02] text-[var(--ink)]'
+                        : 'text-[var(--ink-2)] hover:text-[var(--ink-2)]'}`}
                   >
                     {lang}
                   </button>
@@ -319,7 +319,7 @@ export default function PlaygroundPage() {
                 <CopyBtn text={getSnippet()} />
               </div>
 
-              <pre className="p-5 text-sm font-mono text-[var(--text-2)] overflow-x-auto leading-relaxed">
+              <pre className="p-5 text-sm font-mono text-[var(--ink-2)] overflow-x-auto leading-relaxed">
                 {getSnippet()}
               </pre>
             </motion.div>

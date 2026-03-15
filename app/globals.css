@@ -2,106 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    --font-display: 'Montserrat', system-ui, sans-serif;
-    --font-body: 'Space Grotesk', system-ui, sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
-    --bg: #0e0e10;
-    --bg-1: #141416;
-    --bg-2: #1a1a1e;
-    --bg-3: #222226;
-    --surface: rgba(255,255,255,0.03);
-    --glass: rgba(255,255,255,0.04);
-    --glass-border: rgba(255,255,255,0.06);
-    --glass-strong: rgba(255,255,255,0.07);
-    --text: #eaeaea;
-    --text-2: #8a8a8f;
-    --text-3: #555558;
-    --gold: #d4a843;
-    --gold-soft: rgba(212,168,67,0.12);
-    --gold-glow: rgba(212,168,67,0.2);
-    --blue: #5b9cf5;
-    --green: #4ade80;
-    --red: #f87171;
-    --border: rgba(255,255,255,0.05);
+    --font: 'Montserrat', system-ui, sans-serif;
+    --warm: #f6f4f0;
+    --warm-2: #eeece7;
+    --warm-3: #e4e1db;
+    --white: #ffffff;
+    --ink: #1a1a1a;
+    --ink-2: #636360;
+    --ink-3: #9e9e98;
+    --ink-4: #c4c4be;
+    --border: rgba(0,0,0,0.06);
+    --border-2: rgba(0,0,0,0.1);
   }
 
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
+    font-family: var(--font);
+    font-weight: 400;
+    background: var(--warm);
+    color: var(--ink);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
-  ::selection { background: var(--gold); color: var(--bg); }
-  *::-webkit-scrollbar { width: 4px; }
-  *::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+  ::selection { background: var(--ink); color: white; }
 }
 
 @layer components {
-  .t-mega { font-family: var(--font-display); font-size: clamp(3rem,7vw,5.5rem); font-weight: 900; line-height: 0.95; letter-spacing: -0.05em; text-transform: uppercase; }
-  .t-h1 { font-family: var(--font-display); font-size: clamp(1.6rem,3.2vw,2.4rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.035em; }
-  .t-h2 { font-family: var(--font-display); font-size: clamp(1.1rem,2vw,1.4rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.025em; }
-  .t-h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; }
-  .t-body { font-size: 1rem; line-height: 1.7; color: var(--text-2); font-weight: 400; }
-  .t-sm { font-size: 0.875rem; line-height: 1.6; color: var(--text-2); }
-  .t-xs { font-size: 0.75rem; color: var(--text-3); }
-  .t-label { font-family: var(--font-display); font-size: 0.625rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
-  .t-mono { font-family: var(--font-mono); font-size: 0.8rem; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; }
+  .card-hover { background: var(--white); border: 1px solid var(--border); border-radius: 16px; transition: all 0.4s cubic-bezier(0.23,1,0.32,1); }
+  .card-hover:hover { border-color: var(--border-2); box-shadow: 0 4px 24px rgba(0,0,0,0.04); transform: translateY(-2px); }
 
-  /* Glass surfaces */
-  .glass { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; backdrop-filter: blur(20px); }
-  .glass-strong { background: var(--glass-strong); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; backdrop-filter: blur(40px); }
-  .glass-hover { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; backdrop-filter: blur(20px); transition: all 0.45s cubic-bezier(0.23,1,0.32,1); }
-  .glass-hover:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04); transform: translateY(-3px); }
-
-  /* Buttons */
-  .btn-gold {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    padding: 14px 36px; font-family: var(--font-display); font-size: 13px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--bg); background: var(--gold); border: none; border-radius: 999px; cursor: pointer;
-    transition: all 0.35s cubic-bezier(0.23,1,0.32,1); position: relative;
+  .btn-dark {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 13px 32px; font-family: var(--font); font-size: 14px; font-weight: 600;
+    color: white; background: var(--ink); border: none; border-radius: 999px; cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
   }
-  .btn-gold::after { content: ''; position: absolute; inset: -3px; border-radius: inherit; background: var(--gold); opacity: 0; filter: blur(20px); transition: opacity 0.4s; z-index: -1; }
-  .btn-gold:hover { transform: scale(1.04); box-shadow: 0 4px 24px var(--gold-glow); }
-  .btn-gold:hover::after { opacity: 0.4; }
-  .btn-gold:active { transform: scale(0.96); }
+  .btn-dark:hover { background: #333; transform: scale(1.02); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+  .btn-dark:active { transform: scale(0.97); }
 
-  .btn-ghost {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 13px 28px; font-family: var(--font-display); font-size: 13px; font-weight: 600;
-    letter-spacing: 0.04em; text-transform: uppercase;
-    color: var(--text-2); background: transparent; border: 1px solid var(--glass-border);
-    border-radius: 999px; cursor: pointer; transition: all 0.3s ease;
+  .btn-outline {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 28px; font-family: var(--font); font-size: 14px; font-weight: 500;
+    color: var(--ink); background: transparent; border: 1.5px solid var(--border-2);
+    border-radius: 999px; cursor: pointer; transition: all 0.25s ease;
   }
-  .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+  .btn-outline:hover { border-color: var(--ink-3); background: rgba(0,0,0,0.02); }
 
-  .btn-micro {
-    padding: 8px 16px; font-family: var(--font-body); font-size: 12px; font-weight: 500;
-    color: var(--text-2); background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border);
-    border-radius: 999px; cursor: pointer; transition: all 0.2s ease;
+  .input-warm {
+    width: 100%; padding: 14px 18px; font-family: var(--font); font-size: 15px; font-weight: 400;
+    color: var(--ink); background: var(--warm); border: 1.5px solid var(--border);
+    border-radius: 14px; outline: none; transition: all 0.2s ease;
   }
-  .btn-micro:hover { color: var(--text); background: rgba(255,255,255,0.07); }
+  .input-warm::placeholder { color: var(--ink-4); }
+  .input-warm:focus { border-color: var(--ink-3); background: var(--white); box-shadow: 0 0 0 3px rgba(0,0,0,0.04); }
 
-  /* Input */
-  .input-dark {
-    width: 100%; padding: 14px 20px; font-family: var(--font-body); font-size: 15px;
-    color: var(--text); background: rgba(255,255,255,0.03); border: 1.5px solid var(--glass-border);
-    border-radius: 14px; outline: none; transition: all 0.25s ease;
-  }
-  .input-dark::placeholder { color: var(--text-3); }
-  .input-dark:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); background: rgba(255,255,255,0.05); }
+  .m { font-family: var(--font); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+  .m-get { background: #e9f5ed; color: #1a7a36; }
+  .m-post { background: #e8f0fe; color: #1a56d0; }
+  .m-put { background: #fef3e0; color: #b06000; }
+  .m-del { background: #fce8e6; color: #c5221f; }
 
-  .m { font-family: var(--font-mono); font-size: 10px; font-weight: 500; padding: 3px 7px; border-radius: 5px; letter-spacing: 0.03em; }
-  .m-get { background: rgba(74,222,128,0.1); color: var(--green); }
-  .m-post { background: var(--gold-soft); color: var(--gold); }
-  .m-put { background: rgba(91,156,245,0.1); color: var(--blue); }
-  .m-del { background: rgba(248,113,113,0.1); color: var(--red); }
+  @keyframes drift { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-15px)} }
 }
