@@ -181,93 +181,133 @@ function Pipeline() {
 }
 
 // ═════════════════════════════════════════
-// NAVIGATION
+// MORPHING HEADER
 // ═════════════════════════════════════════
 function Nav() {
-  const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
-  const lastY = useRef(0);
+  const [hovering, setHovering] = useState(false);
 
   useEffect(() => {
-    const fn = () => {
-      const y = window.scrollY;
-      const goingDown = y > lastY.current && y > 80;
-      const goingUp = y < lastY.current;
-
-      if (goingDown) setVisible(false);
-      if (goingUp) setVisible(true);
-
-      setScrolled(y > 100);
-      lastY.current = y;
-    };
+    const fn = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', fn, { passive: true });
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  // Top links (hero visible) vs scrolled links
-  const topLinks = [
-    { label: 'Platform', href: '#platform' },
-    { label: 'Research', href: '#ai' },
-    { label: 'Pricing', href: '#pricing' },
+  const subEntities = ['Research', 'AI', 'Voice', 'API'];
+  const centerLinks = [
+    { label: 'Features', href: '#platform' },
+    { label: 'About Us', href: '#ai' },
+    { label: 'Careers', href: '#pricing' },
   ];
-  const scrolledLinks = [
-    { label: 'Explore', href: '#platform' },
-    { label: 'Features', href: '#ai' },
-    { label: 'FAQs', href: '#pricing' },
-    { label: 'Careers', href: '#' },
-  ];
-
-  const links = scrolled ? scrolledLinks : topLinks;
 
   return (
-    <motion.nav
-      initial={{ y: -16, opacity: 0 }}
-      animate={{ y: visible ? 0 : -80, opacity: visible ? 1 : 0 }}
-      transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-      className={`fixed top-0 w-full z-50 transition-colors duration-300 ${
-        scrolled ? 'bg-[var(--warm)]/90 backdrop-blur-2xl border-b border-black/[0.04]' : ''
-      }`}
+    <motion.header
+      className="fixed top-0 left-0 right-0 z-50"
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease }}
     >
-      <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="text-[20px] font-bold tracking-[-0.03em] text-[var(--ink)] flex-shrink-0">
-            Procyon Labs
-          </Link>
+      {/* Glassmorphism backdrop — fades in on scroll */}
+      <motion.div
+        className="absolute inset-0 border-b"
+        animate={{
+          backgroundColor: scrolled ? 'rgba(246,244,240,0.85)' : 'rgba(246,244,240,0)',
+          backdropFilter: scrolled ? 'blur(20px) saturate(1.2)' : 'blur(0px) saturate(1)',
+          borderColor: scrolled ? 'rgba(0,0,0,0.06)' : 'rgba(0,0,0,0)',
+        }}
+        transition={{ duration: 0.5, ease }}
+        style={{ WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(1.2)' : 'blur(0px)' }}
+      />
 
-          <div className="hidden md:flex items-center gap-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={scrolled ? 'scrolled' : 'top'}
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 8 }}
-                transition={{ duration: 0.25, ease }}
-                className="flex items-center gap-1"
-              >
-                {links.map(l => (
-                  <motion.a key={l.label} href={l.href}
-                    className="text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] px-3 py-2 rounded-full hover:bg-black/[0.03] transition-all"
-                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    {l.label}
-                  </motion.a>
-                ))}
-              </motion.div>
+      <div className="relative max-w-[1200px] mx-auto px-6">
+        <motion.div
+          className="flex items-center justify-between"
+          animate={{ height: scrolled ? 56 : 72 }}
+          transition={{ duration: 0.4, ease }}
+        >
+          {/* Left: Brand + Hover List */}
+          <div className="relative flex-shrink-0"
+            onMouseEnter={() => setHovering(true)}
+            onMouseLeave={() => setHovering(false)}>
+            <motion.div className="cursor-pointer" whileHover={{ scale: 1.005 }}>
+              <span className="text-[20px] font-bold tracking-[-0.03em] text-[var(--ink)] select-none">
+                Procyon Labs
+              </span>
+            </motion.div>
+
+            {/* Hover dropdown — works in both states */}
+            <AnimatePresence>
+              {hovering && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 4, scale: 0.98 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                  className="absolute top-full left-0 mt-2 bg-white rounded-2xl border border-black/[0.06] py-2 px-1 min-w-[180px]"
+                  style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.08)' }}
+                >
+                  {subEntities.map((item, i) => (
+                    <motion.a
+                      key={item}
+                      href={`#${item.toLowerCase()}`}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.04, type: 'spring', stiffness: 280, damping: 24 }}
+                      className="block px-4 py-2 text-[14px] text-[var(--ink-3)] hover:text-[var(--ink)] hover:bg-[var(--warm)] rounded-xl transition-colors"
+                    >
+                      Procyon {item}
+                    </motion.a>
+                  ))}
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <Link href="/login">
-            <motion.span className="text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] px-3 py-2 transition-colors cursor-pointer"
-              whileHover={{ scale: 1.02 }}>Sign in</motion.span>
-          </Link>
-          <Link href="/login">
-            <motion.span className="btn-dark !text-[13px] !py-2.5 !px-6"
-              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>Build with Procyon</motion.span>
-          </Link>
-        </div>
+          {/* Center: Scroll-summoned links */}
+          <div className="absolute left-1/2 -translate-x-1/2 hidden md:block">
+            <AnimatePresence>
+              {scrolled && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  className="flex items-center gap-1 bg-white/60 rounded-full p-1 border border-black/[0.04]"
+                  style={{ backdropFilter: 'blur(8px)' }}
+                >
+                  {centerLinks.map((link, i) => (
+                    <motion.a
+                      key={link.label}
+                      href={link.href}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.06 + i * 0.05, type: 'spring', stiffness: 300, damping: 28 }}
+                      className="px-5 py-2 text-[13px] font-medium text-[var(--ink-2)] hover:text-[var(--ink)] rounded-full hover:bg-white/80 transition-all"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      {link.label}
+                    </motion.a>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Link href="/login">
+              <motion.span className="text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] px-3 py-2 transition-colors cursor-pointer"
+                whileHover={{ scale: 1.02 }}>Sign in</motion.span>
+            </Link>
+            <Link href="/login">
+              <motion.span className="btn-dark !text-[13px] !py-2.5 !px-6"
+                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>Build with Procyon</motion.span>
+            </Link>
+          </div>
+        </motion.div>
       </div>
-    </motion.nav>
+    </motion.header>
   );
 }
 
@@ -370,7 +410,7 @@ export default function Page() {
       <Nav />
 
       {/* ═══ HERO ═══ */}
-      <section className="relative z-10 pt-32 pb-12 px-6">
+      <section className="relative z-10 pt-36 pb-12 px-6">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             {/* Left text */}
