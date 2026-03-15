@@ -1,17 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import type { Project } from '@/types';
+
+const spring = { type: 'spring', stiffness: 300, damping: 30 };
 
 function CopyBtn({ text }: { text: string }) {
   const [ok, setOk] = useState(false);
   return (
-    <button onClick={() => { navigator.clipboard.writeText(text); setOk(true); setTimeout(() => setOk(false), 1500); }}
-      className="px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all bg-[#f5f5f7] text-[#86868b] hover:text-[#1d1d1f] hover:bg-[#ebebed]">
+    <motion.button onClick={() => { navigator.clipboard.writeText(text); setOk(true); setTimeout(() => setOk(false), 1500); }}
+      className="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-[#f1f3f4] text-[#5f6368] hover:bg-[#e8eaed] hover:text-[#1a1a1a] transition-all border-none cursor-pointer"
+      whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
       {ok ? '✓ Copied' : 'Copy'}
-    </button>
+    </motion.button>
   );
 }
 
@@ -46,19 +49,20 @@ export default function OverviewPage() {
 
   const baseUrl = typeof window !== 'undefined' && active ? `${window.location.origin}/api/v1/${active.api_key}` : '';
 
-  if (loading) return <div className="flex justify-center py-32"><div className="h-6 w-6 border-2 border-[#d2d2d7] border-t-[#0071e3] rounded-full animate-spin" /></div>;
+  if (loading) return <div className="flex justify-center py-32"><motion.div className="h-6 w-6 border-2 border-[#e8eaed] border-t-[#1a73e8] rounded-full" animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }} /></div>;
 
   return (
-    <div className="space-y-8">
+    <motion.div className="space-y-8" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}>
       {/* Create */}
-      <div className="card-elevated p-6">
-        <h2 className="text-[15px] font-bold text-[#1d1d1f] mb-3">Create a new API</h2>
+      <div className="surface-elevated p-6">
+        <p className="label mb-3">New API</p>
         <div className="flex gap-3">
-          <input value={prompt} onChange={e => setPrompt(e.target.value)} placeholder='e.g. "A bookstore API with books and authors"'
-            className="input-field flex-1" onKeyDown={e => { if (e.key === 'Enter') create(); }} />
-          <button onClick={create} disabled={!prompt.trim() || creating} className="btn-primary whitespace-nowrap disabled:opacity-30">
-            {creating ? <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Create'}
-          </button>
+          <input value={prompt} onChange={e => setPrompt(e.target.value)} placeholder='Describe your API in plain English...'
+            className="input flex-1" onKeyDown={e => { if (e.key === 'Enter') create(); }} />
+          <motion.button onClick={create} disabled={!prompt.trim() || creating}
+            className="btn-fill whitespace-nowrap disabled:opacity-25" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}>
+            {creating ? <motion.div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full" animate={{ rotate: 360 }} transition={{ duration: 0.7, repeat: Infinity, ease: 'linear' }} /> : 'Create'}
+          </motion.button>
         </div>
       </div>
 
@@ -66,11 +70,13 @@ export default function OverviewPage() {
       {projects.length > 1 && (
         <div className="flex gap-2 flex-wrap">
           {projects.map(p => (
-            <button key={p.id} onClick={() => setActive(p)}
-              className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-all
-                ${active?.id === p.id ? 'bg-[#1d1d1f] text-white' : 'bg-white text-[#424245] border border-[#d2d2d7] hover:border-[#86868b]'}`}>
+            <motion.button key={p.id} onClick={() => setActive(p)}
+              className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-all border-none cursor-pointer
+                ${active?.id === p.id ? 'bg-[#1a1a1a] text-white' : 'bg-white text-[#5f6368] border border-[#e8eaed] hover:border-[#9aa0a6]'}`}
+              style={{ border: active?.id === p.id ? 'none' : '1px solid #e8eaed' }}
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               {p.name}
-            </button>
+            </motion.button>
           ))}
         </div>
       )}
@@ -78,75 +84,77 @@ export default function OverviewPage() {
       {active && (
         <>
           {/* Credentials */}
-          <div className="card p-6">
+          <div className="surface p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-[17px] font-bold text-[#1d1d1f]">{active.name}</h2>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#e8f5e9] text-[#1b5e20]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#4caf50]" /> Active
+              <h2 className="text-[17px] font-bold text-[#1a1a1a] tracking-[-0.01em]">{active.name}</h2>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#e6f4ea] text-[#137333]">
+                <motion.span className="w-1.5 h-1.5 rounded-full bg-[#34a853]" animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 2, repeat: Infinity }} /> Active
               </span>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="section-label mb-2 block">Base URL</label>
-                <div className="flex items-center justify-between bg-[#f5f5f7] rounded-xl px-4 py-3">
-                  <code className="text-[13px] font-mono text-[#1d1d1f] truncate mr-2">{baseUrl}</code>
-                  <CopyBtn text={baseUrl} />
+              {[{ label: 'Base URL', value: baseUrl }, { label: 'API Key', value: active.api_key }].map(item => (
+                <div key={item.label}>
+                  <p className="label mb-2">{item.label}</p>
+                  <div className="flex items-center justify-between bg-[#f8f9fa] rounded-xl px-4 py-3 border border-[#e8eaed]">
+                    <code className="mono text-[#1a1a1a] truncate mr-3">{item.value}</code>
+                    <CopyBtn text={item.value} />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <label className="section-label mb-2 block">API Key</label>
-                <div className="flex items-center justify-between bg-[#f5f5f7] rounded-xl px-4 py-3">
-                  <code className="text-[13px] font-mono text-[#424245] truncate mr-2">{active.api_key}</code>
-                  <CopyBtn text={active.api_key} />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
           {/* Resources */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <h2 className="text-[17px] font-bold text-[#1d1d1f]">Endpoints</h2>
-              <span className="badge">{Object.keys(active.schema_definition).length} resources</span>
+              <h2 className="text-[17px] font-bold text-[#1a1a1a]">Endpoints</h2>
+              <span className="label bg-[#f1f3f4] px-2.5 py-1 rounded-full">{Object.keys(active.schema_definition).length} resources</span>
             </div>
             <div className="space-y-3">
               {Object.entries(active.schema_definition).map(([resource, fields]) => (
-                <div key={resource} className="card overflow-hidden">
+                <motion.div key={resource} className="surface overflow-hidden" layout>
                   <button onClick={() => setExpanded(prev => ({ ...prev, [resource]: !prev[resource] }))}
-                    className="w-full flex items-center justify-between p-5 hover:bg-[#fafafa] transition-colors text-left">
+                    className="w-full flex items-center justify-between p-5 hover:bg-[#fafafa] transition-colors text-left cursor-pointer bg-transparent border-none">
                     <div className="flex items-center gap-3">
                       <div className="flex gap-1.5">
-                        <span className="method-badge method-get">GET</span>
-                        <span className="method-badge method-post">POST</span>
-                        <span className="method-badge method-put">PUT</span>
-                        <span className="method-badge method-delete">DEL</span>
+                        <span className="method method-get">GET</span>
+                        <span className="method method-post">POST</span>
+                        <span className="method method-put">PUT</span>
+                        <span className="method method-del">DEL</span>
                       </div>
-                      <code className="text-[15px] font-mono font-semibold text-[#1d1d1f]">/{resource}</code>
-                      <span className="text-[12px] text-[#86868b]">{Object.keys(fields).length} fields</span>
+                      <code className="text-[15px] font-semibold text-[#1a1a1a] font-[var(--font-mono)]">/{resource}</code>
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#86868b" strokeWidth="2"
-                      className={`transition-transform ${expanded[resource] ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                    <motion.svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" strokeWidth="2"
+                      animate={{ rotate: expanded[resource] ? 180 : 0 }} transition={spring}>
+                      <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
+                    </motion.svg>
                   </button>
-                  {expanded[resource] && (
-                    <div className="border-t border-black/[0.04] p-5 bg-[#fafafa]">
-                      <div className="flex items-center justify-between bg-white rounded-xl px-4 py-2.5 border border-black/[0.04] mb-4">
-                        <code className="text-[12px] font-mono text-[#424245]">{baseUrl}/{resource}</code>
-                        <CopyBtn text={`${baseUrl}/${resource}`} />
-                      </div>
-                      <div className="grid gap-2">
-                        {Object.entries(fields).map(([field, type]) => (
-                          <div key={field} className="flex items-center justify-between py-2 px-3.5 rounded-xl bg-white border border-black/[0.03]">
-                            <span className="font-mono text-[13px] font-medium text-[#1d1d1f]">{field}</span>
-                            <span className={`font-mono text-[11px] font-semibold px-2.5 py-0.5 rounded-full
-                              ${type === 'string' ? 'bg-blue-50 text-blue-700' : type === 'number' ? 'bg-amber-50 text-amber-700' :
-                                type === 'boolean' ? 'bg-green-50 text-green-700' : type === 'uuid' ? 'bg-purple-50 text-purple-700' :
-                                type === 'email' ? 'bg-cyan-50 text-cyan-700' : 'bg-gray-50 text-gray-600'}`}>{type as string}</span>
+                  <AnimatePresence>
+                    {expanded[resource] && (
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                        className="border-t border-[#e8eaed] overflow-hidden">
+                        <div className="p-5 bg-[#f8f9fa]">
+                          <div className="flex items-center justify-between bg-white rounded-xl px-4 py-2.5 border border-[#e8eaed] mb-4">
+                            <code className="mono text-[#5f6368] text-[12px]">{baseUrl}/{resource}</code>
+                            <CopyBtn text={`${baseUrl}/${resource}`} />
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                          <div className="grid gap-1.5">
+                            {Object.entries(fields).map(([field, type]) => (
+                              <div key={field} className="flex items-center justify-between py-2.5 px-4 rounded-xl bg-white border border-[#e8eaed]">
+                                <span className="mono font-medium text-[#1a1a1a]">{field}</span>
+                                <span className={`mono text-[11px] font-semibold px-2.5 py-0.5 rounded-full
+                                  ${type === 'string' ? 'bg-[#e8f0fe] text-[#1967d2]' : type === 'number' ? 'bg-[#fef7e0] text-[#b06000]' :
+                                    type === 'boolean' ? 'bg-[#e6f4ea] text-[#137333]' : type === 'uuid' ? 'bg-[#f3e8fd] text-[#8430ce]' :
+                                    type === 'email' ? 'bg-[#e0f7fa] text-[#00695c]' : 'bg-[#f1f3f4] text-[#5f6368]'}`}>{type as string}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -155,10 +163,10 @@ export default function OverviewPage() {
 
       {!active && !loading && (
         <div className="text-center py-20">
-          <p className="text-[22px] font-bold text-[#1d1d1f] mb-2">No projects yet</p>
-          <p className="text-[#86868b]">Describe your first API above to get started.</p>
+          <p className="display-md text-[#1a1a1a] mb-2">No projects yet</p>
+          <p className="body-md">Describe your first API above to get started.</p>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
