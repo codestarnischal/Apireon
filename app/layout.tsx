@@ -3,12 +3,12 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Procyon Labs — Next-Generation AI Infrastructure',
-  description: 'Advanced AI orchestration, conversational voice, and research-grade infrastructure for developers.',
+  description: 'Advanced AI orchestration, conversational voice, and research-grade developer infrastructure.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body>{children}</body>
     </html>
   );
