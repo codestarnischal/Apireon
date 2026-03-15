@@ -184,55 +184,87 @@ function Pipeline() {
 // NAVIGATION
 // ═════════════════════════════════════════
 function Nav() {
-  const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const lastY = useRef(0);
 
-  useEffect(() => { const fn = () => setScrolled(window.scrollY > 30); window.addEventListener('scroll', fn); return () => window.removeEventListener('scroll', fn); }, []);
+  useEffect(() => {
+    const fn = () => {
+      const y = window.scrollY;
+      const goingDown = y > lastY.current && y > 80;
+      const goingUp = y < lastY.current;
+
+      if (goingDown) setVisible(false);
+      if (goingUp) setVisible(true);
+
+      setScrolled(y > 100);
+      lastY.current = y;
+    };
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  // Top links (hero visible) vs scrolled links
+  const topLinks = [
+    { label: 'Platform', href: '#platform' },
+    { label: 'Research', href: '#ai' },
+    { label: 'Pricing', href: '#pricing' },
+  ];
+  const scrolledLinks = [
+    { label: 'Explore', href: '#platform' },
+    { label: 'Features', href: '#ai' },
+    { label: 'FAQs', href: '#pricing' },
+    { label: 'Careers', href: '#' },
+  ];
+
+  const links = scrolled ? scrolledLinks : topLinks;
 
   return (
-    <motion.nav initial={{ y: -16, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1, duration: 0.5, ease }}
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[var(--warm)]/80 backdrop-blur-2xl border-b border-black/[0.04]' : ''}`}>
+    <motion.nav
+      initial={{ y: -16, opacity: 0 }}
+      animate={{ y: visible ? 0 : -80, opacity: visible ? 1 : 0 }}
+      transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+      className={`fixed top-0 w-full z-50 transition-colors duration-300 ${
+        scrolled ? 'bg-[var(--warm)]/90 backdrop-blur-2xl border-b border-black/[0.04]' : ''
+      }`}
+    >
       <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
-          {/* Brand — text expansion on hover */}
-          <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-            <motion.button className="flex items-baseline gap-1.5" whileHover={{ scale: 1.005 }}>
-              <span className="text-[20px] font-bold tracking-[-0.03em] text-[var(--ink)]">Procyon Labs</span>
-              <motion.span className="text-[10px] text-[var(--ink-3)]" animate={{ rotate: open ? 180 : 0 }} transition={sp}>▾</motion.span>
-            </motion.button>
-
-            <AnimatePresence>
-              {open && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }} transition={{ type: 'spring', stiffness: 200, damping: 24 }}
-                  className="absolute top-full left-0 mt-1.5 overflow-hidden">
-                  <div className="py-1">
-                    {['Research', 'AI', 'Voice', 'API'].map((s, i) => (
-                      <motion.a key={s} href={`#${s.toLowerCase()}`}
-                        initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.04, type: 'spring', stiffness: 200, damping: 22 }}
-                        className="block py-1.5 text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] transition-colors whitespace-nowrap cursor-pointer">
-                        Procyon {s}
-                      </motion.a>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          <Link href="/" className="text-[20px] font-bold tracking-[-0.03em] text-[var(--ink)] flex-shrink-0">
+            Procyon Labs
+          </Link>
 
           <div className="hidden md:flex items-center gap-1">
-            {['Platform', 'Research', 'Pricing'].map(l => (
-              <motion.a key={l} href={l === 'Pricing' ? '#pricing' : `#${l.toLowerCase()}`}
-                className="text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] px-3 py-2 rounded-full hover:bg-black/[0.03] transition-all"
-                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>{l}</motion.a>
-            ))}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={scrolled ? 'scrolled' : 'top'}
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.25, ease }}
+                className="flex items-center gap-1"
+              >
+                {links.map(l => (
+                  <motion.a key={l.label} href={l.href}
+                    className="text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] px-3 py-2 rounded-full hover:bg-black/[0.03] transition-all"
+                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    {l.label}
+                  </motion.a>
+                ))}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <Link href="/login"><motion.span className="text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] px-3 py-2 transition-colors cursor-pointer" whileHover={{ scale: 1.02 }}>Sign in</motion.span></Link>
-          <Link href="/login"><motion.span className="btn-dark !text-[13px] !py-2.5 !px-6" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>Build with Procyon</motion.span></Link>
+          <Link href="/login">
+            <motion.span className="text-[14px] font-medium text-[var(--ink-3)] hover:text-[var(--ink)] px-3 py-2 transition-colors cursor-pointer"
+              whileHover={{ scale: 1.02 }}>Sign in</motion.span>
+          </Link>
+          <Link href="/login">
+            <motion.span className="btn-dark !text-[13px] !py-2.5 !px-6"
+              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>Build with Procyon</motion.span>
+          </Link>
         </div>
       </div>
     </motion.nav>
@@ -288,19 +320,16 @@ function HeroText() {
 
   return (
     <>
-      <motion.div className="flex items-center gap-2 mb-5"
+      <motion.p className="text-[12px] font-semibold tracking-[0.12em] uppercase text-[var(--ink-3)] mb-5"
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.4 }}>
-        <div className="w-1.5 h-1.5 rounded-full bg-[var(--ink-3)] animate-pulse" />
-        <p className="text-[12px] font-semibold tracking-[0.12em] uppercase text-[var(--ink-3)]">
-          Procyon Labs is generating
-        </p>
-      </motion.div>
+        Next-generation AI infrastructure
+      </motion.p>
 
       <h1 className="text-[clamp(2.8rem,5.5vw,4.2rem)] font-bold leading-[0.98] tracking-[-0.04em] text-[var(--ink)] mb-6 min-h-[2.4em]">
         <Typewriter
           text="Build the impossible."
-          delay={600}
-          speed={55}
+          delay={300}
+          speed={30}
           onDone={() => setShowDesc(true)}
         />
       </h1>
@@ -310,8 +339,8 @@ function HeroText() {
           <p className="text-[17px] text-[var(--ink-2)] leading-relaxed">
             <Typewriter
               text="Advanced orchestration, real-time voice, and managed infrastructure for teams pushing boundaries."
-              delay={400}
-              speed={18}
+              delay={200}
+              speed={8}
               onDone={() => setShowButtons(true)}
             />
           </p>
