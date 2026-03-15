@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Apireon — Describe it. Deploy it. Done.',
-  description: 'Turn natural language into live REST APIs with endpoints, validation, documentation, and hosted databases — in seconds.',
+  title: 'Procyon Labs — Next-Generation AI Infrastructure',
+  description: 'Advanced AI orchestration, voice interfaces, and research-grade infrastructure for developers building the future.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body>{children}</body>
     </html>
   );

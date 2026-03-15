@@ -50,7 +50,7 @@ export const PRICING_TIERS: PricingTier[] = [
 ];
 
 export const APP_CONFIG = {
-  name: 'Apireon',
-  tagline: 'Describe it. Deploy it. Done.',
+  name: 'Procyon Labs',
+  tagline: 'Next-Generation AI Infrastructure',
   description: 'Turn natural language into live REST APIs with documentation, a playground, and database hosting — instantly.',
 };

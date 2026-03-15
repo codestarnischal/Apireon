@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 
-const easeOut = { duration: 0.6, ease: [0.23, 1, 0.32, 1] };
+const ease = [0.23, 1, 0.32, 1] as const;
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -22,79 +22,62 @@ export default function LoginPage() {
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
       setStep('otp');
-    } catch (err: any) { setError(err.message || 'Failed to send code'); }
+    } catch (err: any) { setError(err.message); }
     finally { setLoading(false); }
   };
 
   const verifyOtp = async (e: React.FormEvent) => {
     e.preventDefault(); setLoading(true); setError('');
     try {
-      const { error: verifyError } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
-      if (verifyError) throw verifyError;
+      const { error: err } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' });
+      if (err) throw err;
       router.push('/overview');
-    } catch (err: any) { setError(err.message || 'Invalid or expired code'); }
+    } catch (err: any) { setError(err.message); }
     finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center px-6">
-      <motion.div className="w-full max-w-[400px]"
-        initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={easeOut}>
+    <div className="min-h-screen bg-[var(--bg)] flex items-center justify-center px-6">
+      {/* Subtle ambient orb */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(124,106,239,0.06) 0%, transparent 70%)' }} />
 
+      <motion.div className="relative z-10 w-full max-w-[400px]" initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }}>
         <div className="text-center mb-8">
-          <motion.span className="text-[28px] font-bold tracking-[-0.04em] text-[#1a1a1a]"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-            Apireon
-          </motion.span>
-          <motion.p className="text-[15px] text-[#5f6368] mt-2"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-            {step === 'email' ? 'Sign in with a one-time code' : `Enter the code sent to ${email}`}
-          </motion.p>
+          <h1 className="text-[24px] font-bold text-white font-[var(--font-display)] tracking-[-0.03em]">Procyon Labs</h1>
+          <p className="text-[14px] text-[var(--text-2)] mt-2">
+            {step === 'email' ? 'Sign in with a one-time code' : `Code sent to ${email}`}
+          </p>
         </div>
 
-        <motion.div className="surface-elevated p-8"
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, ...easeOut }}>
-
-          {error && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-              className="mb-5 px-4 py-3 rounded-xl bg-[#fce8e6] text-[#c5221f] text-[13px] font-medium">{error}</motion.div>
-          )}
+        <div className="sf-elevated p-8">
+          {error && <div className="mb-5 px-4 py-3 rounded-xl bg-[var(--red)]/10 text-[var(--red)] text-[13px] font-medium border border-[var(--red)]/20">{error}</div>}
 
           {step === 'email' ? (
             <form onSubmit={sendOtp} className="space-y-5">
               <div>
-                <label className="text-[13px] font-semibold text-[#1a1a1a] mb-2 block">Email address</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                  className="input" placeholder="you@company.com" required autoFocus />
+                <label className="text-[13px] font-semibold text-white mb-2 block">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="input-dark" placeholder="you@company.com" required autoFocus />
               </div>
-              <motion.button type="submit" disabled={loading || !email}
-                className="w-full btn-fill justify-center !py-3" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+              <motion.button type="submit" disabled={loading || !email} className="w-full btn-glow justify-center !py-3" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
                 {loading ? <motion.div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full" animate={{ rotate: 360 }} transition={{ duration: 0.7, repeat: Infinity, ease: 'linear' }} /> : 'Continue'}
               </motion.button>
             </form>
           ) : (
             <form onSubmit={verifyOtp} className="space-y-5">
               <div>
-                <label className="text-[13px] font-semibold text-[#1a1a1a] mb-2 block">Verification code</label>
+                <label className="text-[13px] font-semibold text-white mb-2 block">Verification code</label>
                 <input type="text" value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="input text-center text-[28px] tracking-[0.4em] font-[var(--font-mono)] font-bold" placeholder="······"
-                  maxLength={6} required autoFocus />
+                  className="input-dark text-center text-[28px] tracking-[0.4em] font-[var(--font-mono)] font-bold" placeholder="······" maxLength={6} required autoFocus />
               </div>
-              <motion.button type="submit" disabled={loading || otp.length !== 6}
-                className="w-full btn-fill justify-center !py-3" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+              <motion.button type="submit" disabled={loading || otp.length !== 6} className="w-full btn-glow justify-center !py-3" whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
                 {loading ? <motion.div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full" animate={{ rotate: 360 }} transition={{ duration: 0.7, repeat: Infinity, ease: 'linear' }} /> : 'Verify & sign in'}
               </motion.button>
               <button type="button" onClick={() => { setStep('email'); setOtp(''); setError(''); }}
-                className="w-full text-[13px] text-[#1a73e8] font-medium hover:underline py-1 bg-transparent border-none cursor-pointer">
-                Use a different email
-              </button>
+                className="w-full text-[13px] text-[var(--accent)] font-medium hover:underline py-1 bg-transparent border-none cursor-pointer">Use a different email</button>
             </form>
           )}
-        </motion.div>
-
-        <p className="text-center text-[12px] text-[#9aa0a6] mt-6">
-          By continuing, you agree to our Terms of Service
-        </p>
+        </div>
+        <p className="text-center text-[11px] text-[var(--text-3)] mt-6">By continuing, you agree to our Terms of Service</p>
       </motion.div>
     </div>
   );
