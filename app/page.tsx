@@ -132,29 +132,46 @@ function VoiceBars() {
 }
 
 // ═════════════════════════════════════════
-// PIPELINE — Simple flow
+// PIPELINE — Real logos, mono → color hover
 // ═════════════════════════════════════════
 function Pipeline() {
-  const n = [
-    { l: 'Input', c: '#9e9e98' },
-    { l: 'Gemini', c: '#4285f4' },
-    { l: 'Claude', c: '#cc785c' },
-    { l: 'Output', c: '#2d8a4e' },
+  const nodes = [
+    { l: 'Input', c: '#9e9e98', type: 'text' as const },
+    { l: 'Gemini', c: '#4285f4', type: 'logo' as const, src: '/gemini.png' },
+    { l: 'Claude', c: '#cc785c', type: 'logo' as const, src: '/claude.png' },
+    { l: 'Output', c: '#2d8a4e', type: 'text' as const },
   ];
   return (
-    <div className="flex items-center justify-center gap-3 max-w-[480px] mx-auto">
-      {n.map((node, i) => (
+    <div className="flex items-center justify-center gap-3 max-w-[520px] mx-auto">
+      {nodes.map((node, i) => (
         <div key={node.l} className="flex items-center gap-3">
           <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
-            transition={{ delay: i * 0.12, ...sp }} className="flex flex-col items-center gap-2">
-            <div className="w-14 h-14 rounded-2xl border-[1.5px] flex items-center justify-center text-[11px] font-bold"
-              style={{ borderColor: `${node.c}30`, color: node.c, background: `${node.c}08` }}>
-              {node.l.slice(0, 2).toUpperCase()}
-            </div>
+            transition={{ delay: i * 0.12, ...sp }} className="flex flex-col items-center gap-2.5">
+            {node.type === 'logo' ? (
+              /* Logo node — grayscale by default, color on hover */
+              <motion.div
+                className="w-16 h-16 rounded-2xl border-[1.5px] flex items-center justify-center overflow-hidden group cursor-pointer"
+                style={{ borderColor: `${node.c}20`, background: `${node.c}06` }}
+                whileHover={{ scale: 1.08, borderColor: `${node.c}40` }}
+                transition={sp}
+              >
+                <img
+                  src={node.src}
+                  alt={node.l}
+                  className="w-9 h-9 object-contain transition-all duration-500 ease-out grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100"
+                />
+              </motion.div>
+            ) : (
+              /* Text node — Input/Output */
+              <div className="w-16 h-16 rounded-2xl border-[1.5px] flex items-center justify-center text-[11px] font-bold"
+                style={{ borderColor: `${node.c}30`, color: node.c, background: `${node.c}08` }}>
+                {node.l.slice(0, 2).toUpperCase()}
+              </div>
+            )}
             <span className="text-[11px] font-medium text-[var(--ink-2)]">{node.l}</span>
           </motion.div>
           {i < 3 && (
-            <motion.div className="w-6 h-px bg-[var(--ink-4)]" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
+            <motion.div className="w-8 h-px bg-[var(--ink-4)]" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }}
               transition={{ delay: i * 0.12 + 0.08, duration: 0.5, ease }} />
           )}
         </div>
@@ -330,14 +347,20 @@ export default function Page() {
           <R d={0.2} className="mt-10">
             <div className="card p-6 text-left" style={{ background: 'var(--warm-2)' }}>
               <p className="text-[11px] font-semibold tracking-[0.1em] uppercase text-[var(--ink-3)] mb-3">Example</p>
-              <div className="space-y-2.5 text-[13px]">
+              <div className="space-y-3 text-[13px]">
                 {[
-                  { k: 'Input', v: '"Analyze 500 reviews and generate a strategy report"', c: 'var(--ink-3)' },
-                  { k: 'Gemini', v: 'Structures prompt, chunks data, defines output schema', c: '#4285f4' },
-                  { k: 'Claude', v: 'Sentiment analysis, pattern detection, insight generation', c: '#cc785c' },
-                  { k: 'Output', v: 'Structured JSON with confidence scores and recommendations', c: '#2d8a4e' },
+                  { k: 'Input', v: '"Analyze 500 reviews and generate a strategy report"', c: 'var(--ink-3)', logo: null },
+                  { k: 'Gemini', v: 'Structures prompt, chunks data, defines output schema', c: '#4285f4', logo: '/gemini.png' },
+                  { k: 'Claude', v: 'Sentiment analysis, pattern detection, insight generation', c: '#cc785c', logo: '/claude.png' },
+                  { k: 'Output', v: 'Structured JSON with confidence scores and recommendations', c: '#2d8a4e', logo: null },
                 ].map(r => (
-                  <div key={r.k} className="flex gap-3"><span className="font-semibold w-14 flex-shrink-0" style={{ color: r.c }}>{r.k}</span><span className="text-[var(--ink-2)]">{r.v}</span></div>
+                  <div key={r.k} className="flex gap-3 items-start">
+                    <span className="font-semibold w-16 flex-shrink-0 flex items-center gap-1.5" style={{ color: r.c }}>
+                      {r.logo && <img src={r.logo} alt={r.k} className="w-4 h-4 object-contain" />}
+                      {r.k}
+                    </span>
+                    <span className="text-[var(--ink-2)]">{r.v}</span>
+                  </div>
                 ))}
               </div>
             </div>
