@@ -240,6 +240,98 @@ function Nav() {
 }
 
 // ═════════════════════════════════════════
+// TYPEWRITER — Types text character by character
+// ═════════════════════════════════════════
+function Typewriter({ text, delay = 0, speed = 35, className = '', onDone }: {
+  text: string; delay?: number; speed?: number; className?: string; onDone?: () => void;
+}) {
+  const [displayed, setDisplayed] = useState('');
+  const [started, setStarted] = useState(false);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setStarted(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+
+  useEffect(() => {
+    if (!started) return;
+    if (displayed.length < text.length) {
+      const t = setTimeout(() => setDisplayed(text.slice(0, displayed.length + 1)), speed);
+      return () => clearTimeout(t);
+    } else if (!done) {
+      setDone(true);
+      onDone?.();
+    }
+  }, [started, displayed, text, speed, done, onDone]);
+
+  return (
+    <span className={className}>
+      {displayed}
+      {started && !done && (
+        <motion.span
+          className="inline-block w-[2px] h-[0.9em] bg-[var(--ink)] ml-[2px] align-middle"
+          animate={{ opacity: [1, 0, 1] }}
+          transition={{ duration: 0.8, repeat: Infinity }}
+        />
+      )}
+    </span>
+  );
+}
+
+// ═════════════════════════════════════════
+// HERO TEXT — Procyon generates the text
+// ═════════════════════════════════════════
+function HeroText() {
+  const [showDesc, setShowDesc] = useState(false);
+  const [showButtons, setShowButtons] = useState(false);
+
+  return (
+    <>
+      <motion.div className="flex items-center gap-2 mb-5"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.4 }}>
+        <div className="w-1.5 h-1.5 rounded-full bg-[var(--ink-3)] animate-pulse" />
+        <p className="text-[12px] font-semibold tracking-[0.12em] uppercase text-[var(--ink-3)]">
+          Procyon Labs is generating
+        </p>
+      </motion.div>
+
+      <h1 className="text-[clamp(2.8rem,5.5vw,4.2rem)] font-bold leading-[0.98] tracking-[-0.04em] text-[var(--ink)] mb-6 min-h-[2.4em]">
+        <Typewriter
+          text="Build the impossible."
+          delay={600}
+          speed={55}
+          onDone={() => setShowDesc(true)}
+        />
+      </h1>
+
+      <div className="min-h-[4em] mb-8 max-w-[420px]">
+        {showDesc && (
+          <p className="text-[17px] text-[var(--ink-2)] leading-relaxed">
+            <Typewriter
+              text="Advanced orchestration, real-time voice, and managed infrastructure for teams pushing boundaries."
+              delay={400}
+              speed={18}
+              onDone={() => setShowButtons(true)}
+            />
+          </p>
+        )}
+      </div>
+
+      <motion.div
+        className="flex items-center gap-3"
+        initial={{ opacity: 0, y: 12 }}
+        animate={showButtons ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, ease }}
+      >
+        <Link href="/login"><motion.span className="btn-dark" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>Build with Procyon</motion.span></Link>
+        <motion.a href="#platform" className="btn-outline" whileHover={{ scale: 1.02 }}>Explore platform</motion.a>
+      </motion.div>
+    </>
+  );
+}
+
+// ═════════════════════════════════════════
 // PAGE
 // ═════════════════════════════════════════
 export default function Page() {
@@ -255,17 +347,7 @@ export default function Page() {
             {/* Left text */}
             <motion.div className="flex-1 max-w-[520px]"
               initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8, ease }}>
-              <p className="text-[12px] font-semibold tracking-[0.12em] uppercase text-[var(--ink-3)] mb-5">Next-generation AI infrastructure</p>
-              <h1 className="text-[clamp(2.8rem,5.5vw,4.2rem)] font-bold leading-[0.98] tracking-[-0.04em] text-[var(--ink)] mb-6">
-                Build the<br />impossible.
-              </h1>
-              <p className="text-[17px] text-[var(--ink-2)] leading-relaxed mb-8 max-w-[420px]">
-                Advanced orchestration, real-time voice, and managed infrastructure for teams pushing boundaries.
-              </p>
-              <div className="flex items-center gap-3">
-                <Link href="/login"><motion.span className="btn-dark" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>Build with Procyon</motion.span></Link>
-                <motion.a href="#platform" className="btn-outline" whileHover={{ scale: 1.02 }}>Explore platform</motion.a>
-              </div>
+              <HeroText />
             </motion.div>
 
             {/* Right — Neural Mesh + Voice */}
