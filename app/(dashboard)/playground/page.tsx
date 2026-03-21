@@ -58,7 +58,7 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-      className="p-1.5 rounded hover:bg-[var(--warm)] transition-colors"
+      className="p-1.5 rounded hover:bg-[var(--calm-warm)] transition-colors"
     >
       {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 text-[var(--ink-2)]" />}
     </button>
@@ -154,7 +154,7 @@ export default function PlaygroundPage() {
       </div>
 
       {/* Request Builder */}
-      <div className="card overflow-hidden">
+      <div className="card-calm overflow-hidden">
         {/* Method + URL bar */}
         <div className="flex items-center gap-3 p-4 border-b border-black/[0.04]">
           {/* Method selector */}
@@ -177,7 +177,7 @@ export default function PlaygroundPage() {
             <select
               value={resource}
               onChange={(e) => handleResourceChange(e.target.value)}
-              className="appearance-none bg-white/[0.02] border border-black/[0.04] text-[var(--ink-2)]
+              className="appearance-none bg-[var(--calm-card)]/[0.02] border border-black/[0.04] text-[var(--ink-2)]
                         font-mono text-sm pl-3 pr-8 py-2.5 rounded-lg cursor-pointer focus:outline-none
                         focus:ring-2 focus:ring-brand-500/40"
             >
@@ -189,7 +189,7 @@ export default function PlaygroundPage() {
           </div>
 
           {/* Full URL display */}
-          <div className="flex-1 flex items-center gap-2 bg-white/[0.02] rounded-lg px-3 py-2.5 border border-black/[0.04]">
+          <div className="flex-1 flex items-center gap-2 bg-[var(--calm-card)]/[0.02] rounded-lg px-3 py-2.5 border border-black/[0.04]">
             <code className="text-sm font-mono text-[var(--ink-2)] truncate">{fullUrl}</code>
             <CopyBtn text={fullUrl} />
           </div>
@@ -218,7 +218,7 @@ export default function PlaygroundPage() {
               exit={{ height: 0, opacity: 0 }}
               className="border-b border-black/[0.04]"
             >
-              <div className="flex items-center justify-between px-4 py-2 bg-white/[0.02]">
+              <div className="flex items-center justify-between px-4 py-2 bg-[var(--calm-card)]/[0.02]">
                 <span className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider">Request Body</span>
                 <button
                   onClick={() => {
@@ -250,10 +250,10 @@ export default function PlaygroundPage() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="card overflow-hidden"
+            className="card-calm overflow-hidden"
           >
             {/* Response header */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-black/[0.04] bg-white/[0.02]">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-black/[0.04] bg-[var(--calm-card)]/[0.02]">
               <div className="flex items-center gap-3">
                 {response.status >= 200 && response.status < 300 ? (
                   <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -281,10 +281,10 @@ export default function PlaygroundPage() {
       </AnimatePresence>
 
       {/* Code Snippets */}
-      <div className="card overflow-hidden">
+      <div className="card-calm overflow-hidden">
         <button
           onClick={() => setShowSnippets(!showSnippets)}
-          className="w-full flex items-center justify-between px-5 py-4 hover:bg-[var(--warm)] transition-colors"
+          className="w-full flex items-center justify-between px-5 py-4 hover:bg-[var(--calm-warm)] transition-colors"
         >
           <div className="flex items-center gap-3">
             <Code2 className="h-4 w-4 text-[var(--ink)]" />
@@ -302,14 +302,14 @@ export default function PlaygroundPage() {
               className="border-t border-black/[0.04]"
             >
               {/* Language tabs */}
-              <div className="flex items-center gap-1 px-4 py-2 bg-white/[0.02] border-b border-black/[0.04]">
+              <div className="flex items-center gap-1 px-4 py-2 bg-[var(--calm-card)]/[0.02] border-b border-black/[0.04]">
                 {(['curl', 'javascript', 'python'] as SnippetLanguage[]).map((lang) => (
                   <button
                     key={lang}
                     onClick={() => setSnippetLang(lang)}
                     className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-colors
                                ${snippetLang === lang
-                        ? 'bg-white/[0.02] text-[var(--ink)]'
+                        ? 'bg-[var(--calm-card)]/[0.02] text-[var(--ink)]'
                         : 'text-[var(--ink-2)] hover:text-[var(--ink-2)]'}`}
                   >
                     {lang}

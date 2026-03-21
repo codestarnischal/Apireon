@@ -20,7 +20,7 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-      className="p-1 rounded hover:bg-[var(--warm)] transition-colors"
+      className="p-1 rounded hover:bg-[var(--calm-bg)] transition-colors"
     >
       {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-[var(--ink-3)]" />}
     </button>
@@ -46,7 +46,7 @@ function EndpointBlock({
 
   return (
     <div className="border border-black/[0.04] rounded-lg overflow-hidden">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--warm)]">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--calm-bg)]">
         <span className={`method-badge ${methodClasses[method]} text-[11px]`}>{method}</span>
         <code className="text-sm font-mono text-[var(--ink)]">/{resource}{['PUT', 'DELETE'].includes(method) ? '?id={id}' : ''}</code>
         <ChevronDown className={`h-3.5 w-3.5 text-[var(--ink-3)] ml-auto transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -67,7 +67,7 @@ function EndpointBlock({
             <h4 className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">Schema</h4>
             <div className="space-y-1">
               {Object.entries(schema).map(([field, type]) => (
-                <div key={field} className="flex items-center gap-3 text-sm py-1 px-3 bg-[var(--warm)] rounded">
+                <div key={field} className="flex items-center gap-3 text-sm py-1 px-3 bg-[var(--calm-bg)] rounded">
                   <code className="font-mono text-zinc-200 w-28">{field}</code>
                   <span className="font-mono text-xs text-[var(--ink)]">{type}</span>
                 </div>
@@ -86,7 +86,7 @@ export default function PublicDocsClient({ project }: { project: PublicProject }
     : `/api/v1/${project.api_key}`;
 
   return (
-    <div className="min-h-screen bg-[var(--warm)] text-[var(--ink)]">
+    <div className="min-h-screen bg-[var(--calm-bg)] text-[var(--ink)]">
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
         <div className="mb-10">
@@ -99,7 +99,7 @@ export default function PublicDocsClient({ project }: { project: PublicProject }
               {project.description && <p className="text-sm text-[var(--ink-2)]">{project.description}</p>}
             </div>
           </div>
-          <div className="flex items-center gap-2 mt-4 bg-[var(--warm)] rounded-lg px-4 py-2.5 border border-black/[0.04]">
+          <div className="flex items-center gap-2 mt-4 bg-[var(--calm-bg)] rounded-lg px-4 py-2.5 border border-black/[0.04]">
             <Globe className="h-4 w-4 text-[var(--ink-3)]" />
             <code className="text-sm font-mono text-[var(--ink)] flex-1">{baseUrl}</code>
             <CopyBtn text={baseUrl} />

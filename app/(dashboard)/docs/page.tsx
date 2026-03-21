@@ -32,7 +32,7 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-      className="p-1 rounded hover:bg-[var(--warm)] transition-colors"
+      className="p-1 rounded hover:bg-[var(--calm-warm)] transition-colors"
     >
       {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3 text-[var(--ink-2)]" />}
     </button>
@@ -86,7 +86,7 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
     <div className="border border-black/[0.04] rounded-lg overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--warm)] transition-colors"
+        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[var(--calm-warm)] transition-colors"
       >
         <span className={`method-badge ${config.color} text-[11px]`}>{method}</span>
         <code className="text-sm font-mono text-[var(--ink-2)]">/{resource}{method === 'PUT' || method === 'DELETE' ? '?id={id}' : ''}</code>
@@ -104,7 +104,7 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
               {/* URL */}
               <div>
                 <h4 className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">Endpoint</h4>
-                <div className="flex items-center gap-2 bg-white rounded px-3 py-2">
+                <div className="flex items-center gap-2 bg-[var(--calm-card)] rounded px-3 py-2">
                   <code className="text-sm font-mono text-[var(--ink)] flex-1">{url}{method !== 'POST' && method !== 'GET' ? '?id={id}' : ''}</code>
                   <CopyBtn text={url} />
                 </div>
@@ -140,7 +140,7 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
                   </h4>
                   <div className="space-y-1.5 mb-4">
                     {Object.entries(schema).map(([field, type]) => (
-                      <div key={field} className="flex items-center gap-3 text-sm py-1.5 px-3 bg-white/[0.02] rounded">
+                      <div key={field} className="flex items-center gap-3 text-sm py-1.5 px-3 bg-[var(--calm-card)]/[0.02] rounded">
                         <code className="font-mono text-[var(--ink-2)] w-32">{field}</code>
                         <span className="font-mono text-xs text-[var(--ink)]">{type}</span>
                         <span className="text-[var(--ink-2)] text-xs flex-1">{TYPE_DESCRIPTIONS[type] || ''}</span>
@@ -148,7 +148,7 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
                       </div>
                     ))}
                   </div>
-                  <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="bg-[var(--calm-card)] rounded-lg overflow-hidden">
                     <div className="flex items-center justify-between px-3 py-1.5 border-b border-black/[0.04]">
                       <span className="text-[10px] text-[var(--ink-2)] uppercase">Example Body</span>
                       <CopyBtn text={JSON.stringify(example, null, 2)} />
@@ -163,7 +163,7 @@ function EndpointDoc({ method, resource, baseUrl, schema }: EndpointDocProps) {
               {/* Response */}
               <div>
                 <h4 className="text-xs font-semibold text-[var(--ink-2)] uppercase tracking-wider mb-2">Example Response</h4>
-                <div className="bg-white rounded-lg overflow-hidden">
+                <div className="bg-[var(--calm-card)] rounded-lg overflow-hidden">
                   <div className="flex items-center justify-between px-3 py-1.5 border-b border-black/[0.04]">
                     <span className="text-[10px] text-emerald-400/80 font-mono">200 OK</span>
                     <CopyBtn text={exampleResponse} />
@@ -197,8 +197,8 @@ export default function DocsPage() {
         <p className="text-[var(--ink-2)]">Auto-generated documentation for your Bookstore API</p>
       </div>
 
-      {/* Overview card */}
-      <div className="card p-6">
+      {/* Overview card-calm */}
+      <div className="card-calm p-6">
         <div className="grid md:grid-cols-3 gap-6">
           <div className="flex items-start gap-3">
             <Globe className="h-5 w-5 text-[var(--ink)] mt-0.5" />
@@ -225,17 +225,17 @@ export default function DocsPage() {
       </div>
 
       {/* Error codes reference */}
-      <div className="card p-5">
+      <div className="card-calm p-5">
         <h2 className="text-sm font-semibold text-[var(--ink)] mb-3 flex items-center gap-2">
           <Info className="h-4 w-4 text-[var(--ink-2)]" /> Response Format
         </h2>
         <p className="text-sm text-[var(--ink-2)] mb-3">All responses follow a consistent JSON envelope:</p>
         <div className="grid md:grid-cols-2 gap-4 text-xs">
-          <div className="bg-white rounded-lg p-3">
+          <div className="bg-[var(--calm-card)] rounded-lg p-3">
             <div className="text-emerald-400 font-mono mb-1">Success</div>
             <pre className="text-[var(--ink-2)] font-mono">{`{ "success": true, "data": {...}, "meta": {...} }`}</pre>
           </div>
-          <div className="bg-white rounded-lg p-3">
+          <div className="bg-[var(--calm-card)] rounded-lg p-3">
             <div className="text-red-400 font-mono mb-1">Error</div>
             <pre className="text-[var(--ink-2)] font-mono">{`{ "success": false, "error": { "code": "...", "message": "..." } }`}</pre>
           </div>
@@ -267,14 +267,14 @@ export default function DocsPage() {
       ))}
 
       {/* Status codes */}
-      <div className="card p-5">
+      <div className="card-calm p-5">
         <h2 className="text-sm font-semibold text-[var(--ink)] mb-3">HTTP Status Codes</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
           {[
             ['200', 'OK', 'emerald'], ['201', 'Created', 'emerald'], ['400', 'Bad Request', 'amber'],
             ['402', 'Credits Exhausted', 'amber'], ['404', 'Not Found', 'red'], ['429', 'Rate Limited', 'red'],
           ].map(([code, text, color]) => (
-            <div key={code} className="flex items-center gap-2 py-1.5 px-3 rounded bg-white/[0.02]">
+            <div key={code} className="flex items-center gap-2 py-1.5 px-3 rounded bg-[var(--calm-card)]/[0.02]">
               <span className={`font-mono font-bold text-${color}-400`}>{code}</span>
               <span className="text-[var(--ink-2)]">{text}</span>
             </div>
